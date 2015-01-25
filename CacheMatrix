@@ -1,0 +1,69 @@
+
+
+## Creates a special "matrix" object that is comprised of four functions
+##(set, get, setmean, getmean)
+##  Matrix is square and therefore can cache its  inverse
+## It does not matter what functions it uses, so the functions have been simplified so that it is
+# more clear what they are and that they are numeric
+makeCacheMatrix <- function(X = matrix()) {
+  ##environment and print statements were used to check where the different 
+  #values and functions were saved in memory
+  print(environment())
+  evn <- environment()
+  print(parent.env(evn))
+#creates values  that will be included as a matrix
+#<<- is used so that these values can be called from the global environment
+##names are irrelevant, so kept names from example
+  set <<- c(X+13, X-4, X+9, X+6)
+  getting <<- c(X+2, X+3, X+4.5, X+2.7)
+ setmean <<-c(X+7, X-2, X+12, X+5)
+ getmean <<- c(X+9,X-3, X+4.2, X-1)
+getevn<- function() environment()
+list(set = set, getting = getting,
+     setmean = setmean,
+     getmean = getmean,
+     getevn = getevn)
+
+}
+
+
+
+
+X <- 10:14
+vec<-makeCacheMatrix(X)
+
+## this gives us the names of the parent and working environments
+
+
+ls(parent.env(vec$getevn()))
+## this shows us that all of the variables needed to construct the matrix are inside the environment 0x000000000f143358
+
+##confirming that these codes call the appropriate functions
+parent.env(vec$getevn())$setmean
+parent.env(vec$getevn())$getmean
+parent.env(vec$getevn())$set
+parent.env(vec$getevn())$get
+
+
+
+## computes the inverse of the special "matrix" returned by makeCacheMatrix above.
+##If the inverse has already been calculated (and the matrix has not changed), then the cachesolve retrieves the inverse from the cache
+
+cacheSolve <- function(x, ...) {
+        ## Return a matrix that is the inverse of 'makeCacheMatrix'
+  m <- solve(x)
+  if(!is.null(m)) {
+   message("getting cached data")
+   return(m)
+  }
+ # data <- x$get()
+ # m <-
+ #  solve(
+ # (parent.env(vec$getevn())$setmean),
+ # (parent.env(vec$getevn())$getmean),
+ # (parent.env(vec$getevn())$set),
+ # (parent.env(vec$getevn())$get))
+}
+  
+  
+y<-cacheSolve(makeCacheMatrix)
